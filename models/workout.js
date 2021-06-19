@@ -1,0 +1,1 @@
+//3 of 3 to complete: create this workout model based on info in the seed.js file
