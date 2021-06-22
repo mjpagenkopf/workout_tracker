@@ -19,23 +19,31 @@ router.get('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    Workout.Update(
-        { _id: req.params.id },
-        { $set: req.body }, {}, (err, updated => {
-            if (err) {
-                res.json({ 
-                    result: false, err: err
-                });
-                return;
-            }
-            res.json({ result: true, row: updated })
-        })
-    )
+    Workout.findByIdAndUpdate(req.params.id), {
+        $push: {
+            exercises: req.body
+        }
+    }
+    .then(workoutData => {
+        res.json(workoutData)
+    })
+    .catch(err => {
+        res.json(err);
+    })
 })
+
+// router.put('/:id', (req, res) => {
+//     Workout.Update(
+//         { _id: mongojs.ObjectId(req.id) },
+//         { $set: {
+//             exercise: req.body
+//         },
+//     })
+// })
 
 router.post('/', (req, res) => {
     Workout.create({
-
+        
     })
 })
 
