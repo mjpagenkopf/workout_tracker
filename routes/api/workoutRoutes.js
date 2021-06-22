@@ -19,12 +19,23 @@ router.get('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-
+    Workout.Update(
+        { _id: req.params.id },
+        { $set: req.body }, {}, (err, updated => {
+            if (err) {
+                res.json({ 
+                    result: false, err: err
+                });
+                return;
+            }
+            res.json({ result: true, row: updated })
+        })
+    )
 })
 
 router.post('/', (req, res) => {
-    Workout.insert({
-        
+    Workout.create({
+
     })
 })
 
@@ -48,3 +59,31 @@ router.get('/range', (req, res) => {
 
 
 module.exports = router;
+
+
+
+
+//insertOne()
+//createIndex()
+//UUID - Unique Identifiers - to get UUID of Collection, run listCollections or getCollectionInfo() method
+//MongoDB view is a queryable object defined by an aggregation pipeline
+
+//create or define a view:
+// db.createCollection(
+//     "<viewName>",
+//     {
+//       "viewOn" : "<source>",
+//       "pipeline" : [<pipeline>],
+//       "collation" : { <collation> }
+//     }
+//   )
+
+//Use the db.createView() method:
+// db.createView(
+//     "<viewName>",
+//     "<source>",
+//     [<pipeline>],
+//     {
+//       "collation" : { <collation> }
+//     }
+//   )
