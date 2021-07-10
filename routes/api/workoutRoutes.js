@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Workout = require('../../models/workout')//if there were more than 1 model in models folder, would need an index.js to streamline connections
 //After tutor help: 1 of 3 to complete: fill in these workout routes
+
 router.get('/', (req, res) => {
     Workout.aggregate([{
         $addFields: {
@@ -41,10 +42,9 @@ router.put('/:id', (req, res) => {
 //     })
 // })
 
+//CREATING NEW WORKOUT
 router.post('/', (req, res) => {
-    Workout.create({
-        
-    })
+    Workout.create(req.body)  
 })
 
 router.get('/range', (req, res) => {
