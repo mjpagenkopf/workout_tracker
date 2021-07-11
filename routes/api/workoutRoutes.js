@@ -1,9 +1,11 @@
 const router = require('express').Router();
-const Workout = require('../../models/workout')//if there were more than 1 model in models folder, would need an index.js to streamline connections
-//After tutor help: 1 of 3 to complete: fill in these workout routes
+const Workout = require('../../models/workout');
 
-router.get('/', (req, res) => {
-    Workout.aggregate([{
+//After tutor help: 1 of 3 to complete: fill in these 
+
+//get workouts
+router.get('/', (req, res) => { 
+   Workout.aggregate([{
         $addFields: {
             totalDuration: {
                 $sum: "$exercises.duration"
@@ -14,38 +16,41 @@ router.get('/', (req, res) => {
     .then(workoutData => {
         res.json(workoutData)
     })
-    .catch(err => {
-        res.json(err);
+    .catch (err => {
+        res.status(403).json(err);
     });
 });
 
-router.put('/:id', (req, res) => {
-    Workout.findByIdAndUpdate(req.params.id), {
-        $push: {
-            exercises: req.body
+
+router.put('/:_id', async ({body, params}, res) => {
+    Workout.findByIdAndUpdate(
+    params.id, 
+        { 
+            $push: { exercises: body }   
+        },
+        {
+            new: true, 
+            runValidators: true
         }
-    }
+    )
     .then(workoutData => {
-        res.json(workoutData)
+        res.json(workoutData);
     })
     .catch(err => {
-        res.json(err);
-    })
-})
-
-// router.put('/:id', (req, res) => {
-//     Workout.Update(
-//         { _id: mongojs.ObjectId(req.id) },
-//         { $set: {
-//             exercise: req.body
-//         },
-//     })
-// })
+        res.status(402).json(err);
+    });
+});
 
 //CREATING NEW WORKOUT
 router.post('/', (req, res) => {
-    Workout.create(req.body)  
-})
+    Workout.create({})
+    .then(workoutData => {
+        res.json(workoutData)
+    })
+    .catch (err => {
+        res.status(404).json(err);
+    });
+});
 
 router.get('/range', (req, res) => {
     Workout.aggregate([{
@@ -56,20 +61,28 @@ router.get('/range', (req, res) => {
         }
     }])
     .sort({ _id: -1 })//_id is a mongo created id that represents each item stored in the database. 1 or -1 means it displays in ascending or descending order
-    .limit(7).then(workoutData => {
+    .limit(7)
+    .then(workoutData => {
         res.json(workoutData)
     })
-    .catch(err => {
-        res.json(err);
+    .catch (err => {
+        res.status(405).json(err);
     });
 });
-
 
 
 module.exports = router;
 
 
+// .sort({ _id: -1 })//_id is a mongo created id that represents each item stored in the database. 1 or -1 means it displays in ascending or descending order
+//     .limit(7).then(workoutData => {
+//         res.json(workoutData)
+//     })
+//     } catch(err) {
+//         res.status(405).json(err);
+//     };
 
+//if there were more than 1 model in models folder, would need an index.js to streamline connections
 
 //insertOne()
 //createIndex()
