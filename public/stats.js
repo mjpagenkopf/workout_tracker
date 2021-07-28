@@ -8,10 +8,8 @@ function calculateTotalWeight(data) {
       }
       return total;
     }, 0);
-
     totals.push(workoutTotal);
   });
-
   return totals;
 }
 
