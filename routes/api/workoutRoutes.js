@@ -62,6 +62,7 @@ router.get('/range', async (req, res) => {
     }])   
     const week = FullWorkoutData.slice(-7);
     res.json(week);
+});
 
 module.exports = router;
 
