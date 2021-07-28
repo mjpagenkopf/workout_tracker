@@ -1,30 +1,31 @@
 const router = require('express').Router();
-const Workout = require('../../models/workout');
+const db = require('../../models');
 
 //After tutor help: 1 of 3 to complete: fill in these 
 
 //get workouts
-router.get('/', (req, res) => { 
-   Workout.aggregate([{
+router.get('/', async (req, res) => { 
+    try {
+    const workoutData = await db.Workout.aggregate([{
         $addFields: {
             totalDuration: {
                 $sum: "$exercises.duration"
             }
         }
     }])
-    .sort({ _id: -1 })
-    .then(workoutData => {
-        res.json(workoutData)
-    })
-    .catch (err => {
+    const lastWorkout = workoutData[workoutData.length - 1];
+    res.send(lastWorkout)
+    } catch(err) {
         res.status(403).json(err);
-    });
+    }
 });
 
 
-router.put('/:_id', async ({body, params}, res) => {
-    Workout.findByIdAndUpdate(
-    params.id, 
+router.put('/:_id', async (req, res) => {
+    try {
+    const updatedWorkout = await db.Workout.updateOne({
+    _id: req.params.id
+    }, 
         { 
             $push: { exercises: body }   
         },
@@ -33,33 +34,32 @@ router.put('/:_id', async ({body, params}, res) => {
             runValidators: true
         }
     )
-    .then(workoutData => {
-        res.json(workoutData);
-    })
-    .catch(err => {
+    return res.json(updatedWorkout);
+    } catch (err) {
         res.status(402).json(err);
-    });
+    }
 });
 
 //CREATING NEW WORKOUT
-router.post('/', (req, res) => {
-    Workout.create({})
-    .then(workoutData => {
-        res.json(workoutData)
-    })
-    .catch (err => {
+router.post('/', async (req, res) => {
+    try {
+    const newWorkout = new db.Workout(req.body);
+    const createdWorkout = await db.Workout.create(
+        newWorkout)
+        res.json(createdWorkout);
+    } catch (err) {
         res.status(404).json(err);
-    });
+    };
 });
 
-router.get('/range', (req, res) => {
-    Workout.aggregate([{
+router.get('/range', async (req, res) => {
+    db.Workout.aggregate([{
         $addFields: { //adding another key:value pair in the WorkoutSchema model (only when you get it back from the database)
             totalDuration: {
                 $sum: "$exercises.duration"//returns sum of each duration value in the exercises array
             }
         }
-    }])
+    }])   
     .sort({ _id: -1 })//_id is a mongo created id that represents each item stored in the database. 1 or -1 means it displays in ascending or descending order
     .limit(7)
     .then(workoutData => {
