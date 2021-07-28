@@ -60,14 +60,8 @@ router.get('/range', async (req, res) => {
             }
         }
     }])   
-    const week = FullWorkoutData.limit(7);
-        res.json(week)
-    })
-    .catch (err => {
-        res.status(405).json(err);
-    });
-
-
+    const week = FullWorkoutData.slice(-7);
+    res.json(week);
 
 module.exports = router;
 
