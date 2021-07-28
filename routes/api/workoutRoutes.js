@@ -53,26 +53,28 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/range', async (req, res) => {
-    db.Workout.aggregate([{
+    const FullWorkoutData = await db.Workout.aggregate([{
         $addFields: { //adding another key:value pair in the WorkoutSchema model (only when you get it back from the database)
             totalDuration: {
                 $sum: "$exercises.duration"//returns sum of each duration value in the exercises array
             }
         }
     }])   
-    .sort({ _id: -1 })//_id is a mongo created id that represents each item stored in the database. 1 or -1 means it displays in ascending or descending order
-    .limit(7)
-    .then(workoutData => {
-        res.json(workoutData)
+    const week = FullWorkoutData.limit(7);
+        res.json(week)
     })
     .catch (err => {
         res.status(405).json(err);
     });
-});
+};
 
 
 module.exports = router;
 
+
+
+// .sort({ _id: -1 })//_id is a mongo created id that represents each item stored in the database. 1 or -1 means it displays in ascending or descending order
+//     .limit(7)
 
 // .sort({ _id: -1 })//_id is a mongo created id that represents each item stored in the database. 1 or -1 means it displays in ascending or descending order
 //     .limit(7).then(workoutData => {
