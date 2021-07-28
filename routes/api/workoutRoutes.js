@@ -16,16 +16,15 @@ router.get('/', async (req, res) => {
     const lastWorkout = workoutData[workoutData.length - 1];
     res.send(lastWorkout)
     } catch(err) {
-        res.status(403).json(err);
+        res.status(501).json(err);
     }
 });
 
 
-router.put('/:_id', async (req, res) => {
-    try {
+router.put('/:id', async (req, res) => {
+  try {
     const updatedWorkout = await db.Workout.updateOne({
-    _id: req.params.id
-    }, 
+    _id: req.params.id}, 
         { 
             $push: { exercises: body }   
         },
@@ -36,19 +35,19 @@ router.put('/:_id', async (req, res) => {
     )
     return res.json(updatedWorkout);
     } catch (err) {
-        res.status(402).json(err);
+        res.status(502).json(err);
     }
 });
 
 //CREATING NEW WORKOUT
 router.post('/', async (req, res) => {
-    try {
+  try {
     const newWorkout = new db.Workout(req.body);
     const createdWorkout = await db.Workout.create(
         newWorkout)
         res.json(createdWorkout);
     } catch (err) {
-        res.status(404).json(err);
+        res.status(503).json(err);
     };
 });
 
