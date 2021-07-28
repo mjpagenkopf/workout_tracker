@@ -66,7 +66,7 @@ router.get('/range', async (req, res) => {
     .catch (err => {
         res.status(405).json(err);
     });
-};
+
 
 
 module.exports = router;
