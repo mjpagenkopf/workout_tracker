@@ -23,19 +23,19 @@ router.get('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const updatedWorkout = await db.Workout.updateOne({
+    const workoutData = await db.Workout.updateOne({
     _id: req.params.id}, 
         { 
-            $push: { exercises: body }   
+            $push: { exercises: req.body }   
         },
         {
             new: true, 
             runValidators: true
         }
     )
-    return res.json(updatedWorkout);
+    return res.json(workoutData);
     } catch (err) {
-        res.status(502).json(err);
+        res.status(506).json(err);
     }
 });
 
